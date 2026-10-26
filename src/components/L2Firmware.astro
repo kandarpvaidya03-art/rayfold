@@ -1,0 +1,91 @@
+---
+import LayerHead from './LayerHead.astro';
+import { iioSpec, bootSpec, person } from '../data/site';
+const steps = [
+  { k: 'recv', t: 'Receive', s: 'CRC-32 framed UART' },
+  { k: 'verify', t: 'Verify', s: 'SHA-256 + ECDSA P-256' },
+  { k: 'mark', t: 'Mark trial', s: 'write-once flag' },
+  { k: 'reboot', t: 'Reboot', s: 'relocate VTOR, jump' },
+  { k: 'trial', t: 'Trial boot', s: 'timer running' },
+  { k: 'confirm', t: 'Confirm', s: 'app self-confirms' },
+];
+---
+<section id="l2" class="relative py-20 sm:py-28" data-layer="l2" aria-label="Layer 2: firmware and drivers">
+  <div class="wrap">
+    <LayerHead code="L2" name="Firmware & drivers" line="The two builds I'd defend to anyone, specced like a datasheet. Every value below was measured or tested, not estimated." note="every value measured, not guessed ↓" />
+
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <article class="sheet sheet-shadow-hazard flex flex-col" data-reveal>
+        <div class="flex items-center justify-between gap-3 bg-ink px-5 py-2.5 font-mono text-[12.5px] font-bold text-hazard"><span>01 · EMBEDDED LINUX</span><span>PI 5 · ADXL345</span></div>
+        <div class="flex flex-1 flex-col p-5 sm:p-7">
+          <h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">Interrupt-driven Linux IIO driver</h3>
+          <p class="mt-3 text-[16px] leading-relaxed">Out-of-tree I2C kernel driver in C: regmap, devm resources, a threaded IRQ, a data-ready IIO trigger and a triggered buffer with kernel timestamps, bound through a device-tree overlay. Benchmarked against user-space polling with Python capture tools.</p>
+          <table class="spec mt-5">
+            <thead><tr><th>Parameter</th><th>Value</th><th>Condition</th></tr></thead>
+            <tbody>{iioSpec.map(([a, b, c], i) => (<tr><td>{a}</td><td class={`font-bold ${i % 2 === 0 ? 'text-cobalt' : ''}`}>{b}</td><td>{c}</td></tr>))}</tbody>
+          </table>
+          <a href={person.repos.iio} target="_blank" rel="noopener" class="mt-auto inline-block pt-5 font-mono text-sm font-bold underline decoration-2 underline-offset-4">View source on GitHub ↗</a>
+        </div>
+      </article>
+
+      <article class="sheet sheet-shadow-mint flex flex-col" data-reveal>
+        <div class="flex items-center justify-between gap-3 bg-ink px-5 py-2.5 font-mono text-[12.5px] font-bold text-mint"><span>02 · BARE METAL</span><span>STM32F401RE</span></div>
+        <div class="flex flex-1 flex-col p-5 sm:p-7">
+          <h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">Signed, rollback-safe bootloader</h3>
+          <p class="mt-3 text-[16px] leading-relaxed">No-HAL C with its own linker scripts, startup code and drivers. A/B update with backup, trial boot, self-confirmation and automatic rollback. A Python board simulator cuts power at every flash operation; a C# (.NET) update tool is tested against it.</p>
+          <table class="spec mt-5">
+            <thead><tr><th>Parameter</th><th>Value</th><th>Condition</th></tr></thead>
+            <tbody>{bootSpec.map(([a, b, c], i) => (<tr><td>{a}</td><td class={`font-bold ${i % 2 === 0 ? 'text-cobalt' : ''}`}>{b}</td><td>{c}</td></tr>))}</tbody>
+          </table>
+          <a href={person.repos.boot} target="_blank" rel="noopener" class="mt-auto inline-block pt-5 font-mono text-sm font-bold underline decoration-2 underline-offset-4">View source on GitHub ↗</a>
+        </div>
+      </article>
+    </div>
+
+    <!-- boot simulator -->
+    <div class="sheet sheet-shadow-blue mt-12 p-4 sm:p-7" data-reveal data-bootsim>
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="fig">Fig. 5 — Pull the plug: A/B update, live</p>
+          <h3 class="mt-1 font-display text-2xl font-extrabold sm:text-3xl">Try to brick it.</h3>
+        </div>
+        <p class="marker-blue -rotate-1 text-lg">hit ⚡ at any moment. it always comes back.</p>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <div>
+          <ol class="grid grid-cols-3 gap-1.5 sm:grid-cols-6" data-steps>
+            {steps.map((s, i) => (
+              <li class="border-2 border-ink bg-white p-2 transition-colors" data-step={s.k}>
+                <span class="block font-mono text-[10px] font-bold text-muted">0{i + 1}</span>
+                <span class="block font-mono text-[12px] font-bold uppercase leading-tight">{s.t}</span>
+                <span class="block font-mono text-[10px] leading-tight text-muted">{s.s}</span>
+              </li>
+            ))}
+          </ol>
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            {['A', 'B'].map((slot) => (
+              <div class="border-2 border-ink p-3" data-slot={slot}>
+                <div class="flex items-center justify-between font-mono text-[12px] font-bold"><span>SLOT {slot}</span><span data-slot-tag class="px-1.5 py-0.5">—</span></div>
+                <div class="mt-2 font-display text-xl font-black" data-slot-ver>—</div>
+                <div class="mt-2 h-2 border border-ink bg-paper"><div class="h-full w-0 bg-cobalt transition-[width] duration-300" data-slot-bar></div></div>
+              </div>
+            ))}
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <button type="button" class="btn bg-hazard" data-boot-start>▶ Start update</button>
+            <button type="button" class="btn bg-signal text-white disabled:opacity-40" data-boot-cut disabled>⚡ Cut power</button>
+            <label class="ml-1 inline-flex min-h-11 cursor-pointer items-center gap-2 font-mono text-[12px] font-bold uppercase"><input type="checkbox" class="size-4 accent-[#0000C4]" data-boot-broken /> new app is broken</label>
+            <label class="inline-flex min-h-11 cursor-pointer items-center gap-2 font-mono text-[12px] font-bold uppercase"><input type="checkbox" class="size-4 accent-[#0000C4]" data-boot-tamper /> image tampered</label>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <div class="fig mb-1.5 text-muted">UART console</div>
+          <pre class="code h-64 flex-1 overflow-y-auto whitespace-pre-wrap text-[12px] lg:h-auto lg:min-h-64" data-boot-log aria-live="polite">boot: slot A v1.0 confirmed · signature OK
+boot: jumping to slot A</pre>
+        </div>
+      </div>
+      <p class="mt-4 font-mono text-[11.5px] text-muted">Simplified model for the browser. The real decision logic is a write-once flash-flag state machine, unit-tested across all 64 flag states, plus a simulator that cuts power at every one of 585–778 flash operations per update.</p>
+    </div>
+  </div>
+</section>

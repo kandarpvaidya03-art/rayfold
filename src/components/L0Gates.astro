@@ -1,0 +1,89 @@
+---
+import LayerHead from './LayerHead.astro';
+const rows = [[0, 0], [0, 1], [1, 0], [1, 1]];
+---
+<section id="l0" class="relative py-20 sm:py-28" data-layer="l0" aria-label="Layer 0: gates">
+  <div class="wrap">
+    <LayerHead code="L0" name="Gates" line="ECE fundamentals, all the way down: one NAND gate, then the four transistors inside it. Flip the inputs and watch both views agree." note="go on, poke A and B ↓" />
+
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]" data-nand>
+      <!-- controls + truth table -->
+      <div data-reveal>
+        <div class="flex gap-3">
+          <button type="button" class="btn min-w-[108px] bg-ink text-hazard" data-input="a" aria-pressed="true">A = 1</button>
+          <button type="button" class="btn min-w-[108px] bg-white" data-input="b" aria-pressed="false">B = 0</button>
+        </div>
+        <table class="spec mt-6 w-auto bg-white text-[15px]">
+          <caption class="fig mb-2 text-left">Truth table · 2-input NAND</caption>
+          <thead><tr><th>A</th><th>B</th><th>Y</th></tr></thead>
+          <tbody>
+            {rows.map(([a, b]) => (
+              <tr data-row={`${a}${b}`} class="transition-colors"><td class="px-5">{a}</td><td class="px-5">{b}</td><td class="px-5 font-bold">{a && b ? 0 : 1}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="sr-only" aria-live="polite" data-nand-live>A is 1, B is 0, output Y is 1.</p>
+        <ul class="mt-8 grid grid-cols-2 gap-2 font-mono text-[12.5px]">
+          <li class="border-2 border-ink bg-white p-3"><b class="block text-base">NOT</b>1 NAND, inputs tied</li>
+          <li class="border-2 border-ink bg-white p-3"><b class="block text-base">AND</b>2 NANDs</li>
+          <li class="border-2 border-ink bg-white p-3"><b class="block text-base">OR</b>3 NANDs</li>
+          <li class="border-2 border-ink bg-white p-3"><b class="block text-base">XOR</b>4 NANDs</li>
+        </ul>
+      </div>
+
+      <!-- two views -->
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <figure class="sheet sheet-shadow-ink p-5" data-reveal>
+          <figcaption class="fig mb-3">Fig. 2a — Gate view</figcaption>
+          <svg viewBox="0 0 440 220" class="w-full" role="img" aria-label="NAND gate symbol; wires coloured by logic level">
+            <path d="M20 75 H150" stroke-width="8" stroke-linecap="round" data-wire-a class="transition-[stroke]" stroke="#FF220F" />
+            <path d="M20 145 H150" stroke-width="8" stroke-linecap="round" data-wire-b class="transition-[stroke]" stroke="#B8B8C2" />
+            <circle cx="20" cy="75" r="12" data-dot-a fill="#FF220F" />
+            <circle cx="20" cy="145" r="12" data-dot-b fill="#B8B8C2" />
+            <path d="M150 40 H215 A70 70 0 0 1 215 180 H150 Z" fill="#00D8A7" stroke="#0B0B14" stroke-width="5" />
+            <circle cx="296" cy="110" r="11" fill="#fff" stroke="#0B0B14" stroke-width="5" />
+            <path d="M308 110 H392" stroke-width="8" stroke-linecap="round" data-wire-y stroke="#FF220F" />
+            <circle cx="412" cy="110" r="20" stroke="#0B0B14" stroke-width="4" data-led fill="#FF220F" />
+            <g font-family="JetBrains Mono, monospace" font-size="18" font-weight="700" fill="#0B0B14">
+              <text x="8" y="52">A</text><text x="8" y="184">B</text><text x="404" y="160">Y</text><text x="170" y="117">NAND</text>
+            </g>
+          </svg>
+        </figure>
+
+        <figure class="sheet sheet-shadow-blue p-5" data-reveal>
+          <figcaption class="fig mb-3">Fig. 2b — CMOS view · 4 transistors</figcaption>
+          <svg viewBox="0 0 360 320" class="w-full" role="img" aria-label="CMOS NAND: two PMOS in parallel to VDD, two NMOS in series to ground; conducting transistors highlighted" data-cmos>
+            <g stroke="#0B0B14" stroke-width="4" fill="none" stroke-linecap="round">
+              <path d="M70 28 H290" data-rail-vdd />
+              <path d="M130 28 V60 M130 104 V140" data-w="pa" />
+              <path d="M230 28 V60 M230 104 V140" data-w="pb" />
+              <path d="M130 140 H230 M230 140 H322" data-w="y" />
+              <path d="M180 140 V168 M180 208 V224 M180 264 V290" data-w="pd" />
+              <path d="M120 290 H240" data-rail-gnd />
+              <path d="M40 82 H102" /><path d="M262 82 H322" />
+              <path d="M40 188 H162" /><path d="M40 244 H162" />
+            </g>
+            <circle cx="107" cy="82" r="5" fill="#fff" stroke="#0B0B14" stroke-width="3" />
+            <circle cx="257" cy="82" r="5" fill="#fff" stroke="#0B0B14" stroke-width="3" />
+            <circle cx="180" cy="140" r="6" fill="#0B0B14" />
+            <g stroke="#0B0B14" stroke-width="3">
+              <rect x="112" y="60" width="36" height="44" rx="4" data-t="pa" fill="#fff" />
+              <rect x="212" y="60" width="36" height="44" rx="4" data-t="pb" fill="#fff" />
+              <rect x="162" y="168" width="36" height="40" rx="4" data-t="na" fill="#fff" />
+              <rect x="162" y="224" width="36" height="40" rx="4" data-t="nb" fill="#fff" />
+            </g>
+            <g font-family="JetBrains Mono, monospace" font-weight="700" fill="#0B0B14" font-size="12" text-anchor="middle">
+              <text x="130" y="86">PA</text><text x="230" y="86">PB</text><text x="180" y="192">NA</text><text x="180" y="248">NB</text>
+            </g>
+            <g font-family="JetBrains Mono, monospace" font-weight="700" fill="#0B0B14" font-size="14">
+              <text x="296" y="22">VDD</text><text x="248" y="295">GND</text>
+              <text x="22" y="87">A</text><text x="330" y="87">B</text><text x="22" y="193">A</text><text x="22" y="249">B</text>
+              <text x="328" y="145">Y</text>
+            </g>
+            <text x="180" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#4A4A58" data-cmos-note>PA conducts → Y pulled to VDD</text>
+          </svg>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,65 @@
+---
+import LayerHead from './LayerHead.astro';
+---
+<section id="l5" class="relative border-y-2 border-ink bg-sheet py-20 sm:py-28" data-layer="l5" aria-label="Layer 5: systems and products">
+  <div class="wrap">
+    <LayerHead code="L5" name="Systems & products" line="The top of the stack: deciding what to build, what it's made of, and whether a stranger could use it. This is where patents and test rigs live." note="the boring bits that make it shippable ↓" />
+
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-6" data-reveal-stagger>
+      <!-- patents -->
+      <article class="sheet sheet-shadow-blue p-5 md:col-span-4 sm:p-7">
+        <p class="fig">Granted · 2026</p>
+        <h3 class="mt-2 font-display text-3xl font-extrabold leading-tight sm:text-4xl" style="font-stretch:112%">4 Indian design patents</h3>
+        <p class="mt-3 max-w-xl text-[16px] leading-relaxed">Granted for IoT and solar product designs.</p>
+        <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[1, 2, 3, 4].map((n) => (
+            <div class="relative aspect-[3/4] border-2 border-ink bg-white p-3">
+              <div class="barcode h-6 w-full opacity-80"></div>
+              <p class="mt-3 font-mono text-[11px] font-bold">DESIGN 0{n}</p>
+              <p class="font-mono text-[10px] text-muted">IoT / solar</p>
+              <span class="absolute bottom-3 right-3 -rotate-12 border-2 border-signal-text px-1.5 py-0.5 font-mono text-[10px] font-bold text-signal-text">GRANTED</span>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <!-- COMPUTEX -->
+      <article class="flex flex-col justify-between bg-ink p-5 text-[#F4F1E8] md:col-span-2 sm:p-7">
+        <p class="fig text-hazard">Taipei · 2026</p>
+        <div>
+          <h3 class="mt-6 font-display text-4xl font-black uppercase leading-none" style="font-stretch:125%">COMPU<br/>TEX</h3>
+          <p class="mt-4 text-[15px] leading-relaxed text-[#D9D9E0]">Presented my embedded projects to Acer's Taipei R&amp;D team.</p>
+        </div>
+      </article>
+
+      <!-- validation rig -->
+      <article class="sheet p-5 md:col-span-3 sm:p-7">
+        <p class="fig">Test automation · PHN</p>
+        <div class="mt-3 flex items-baseline gap-3"><span class="font-display text-6xl font-black" style="font-stretch:118%">60+</span><span class="font-mono text-sm font-bold">sensors</span></div>
+        <h3 class="mt-2 text-xl font-extrabold">One automated validation rig</h3>
+        <p class="mt-2 text-[15px] leading-relaxed text-muted">Electrical and response-level pass/fail tests, cutting validation time by about 80%.</p>
+      </article>
+
+      <!-- presence system -->
+      <article class="sheet p-5 md:col-span-3 sm:p-7">
+        <p class="fig">System architecture · PHN</p>
+        <div class="mt-3 flex items-baseline gap-3"><span class="font-display text-6xl font-black" style="font-stretch:118%">35</span><span class="font-mono text-sm font-bold">features defined</span></div>
+        <h3 class="mt-2 text-xl font-extrabold">Distributed presence system</h3>
+        <p class="mt-2 text-[15px] leading-relaxed text-muted">Multi-sensor fusion across a ceiling hub, Pi HMI and ESP32 nodes. Hardware selected, BoM drafted.</p>
+      </article>
+
+      <!-- power meter (in progress) -->
+      <article class="relative overflow-hidden border-2 border-ink bg-hazard p-5 md:col-span-6 sm:p-7">
+        <div class="hazard absolute inset-x-0 top-0 h-2" aria-hidden="true"></div>
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="fig">On the bench now · in progress</p>
+            <h3 class="mt-2 font-display text-3xl font-extrabold leading-tight" style="font-stretch:112%">ESP32 AC power meter, V1</h3>
+            <p class="mt-2 max-w-2xl text-[16px] leading-relaxed">My own project: taking an ESP32 power-meter schematic toward a compact, safe, manufacturable V1, in phases: design audit, requirements, circuit redesign, PCB and enclosure, firmware, validation.</p>
+          </div>
+          <p class="font-marker -rotate-2 text-lg text-ink">mains voltage: treated with respect</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

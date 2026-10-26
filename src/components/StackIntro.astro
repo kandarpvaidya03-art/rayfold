@@ -1,0 +1,26 @@
+---
+import SectionHead from './SectionHead.astro';
+import { layers } from '../data/site';
+---
+<section id="stack" class="relative py-24 sm:py-32" aria-labelledby="stack-title">
+  <div class="wrap">
+    <SectionHead id="stack-title" kicker="§02 — Width × depth" title="Every layer<br/>of the stack" note="pick a layer, or just keep scrolling ↓" />
+    <div class="grid grid-cols-1 gap-x-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <p class="mb-8 max-w-xl text-lg leading-relaxed" data-reveal>
+        Most engineers live on one layer. Embedded work punishes that: a dark LED panel can be an init-order bug, a missing kernel module, or a gear that doesn't mesh. Below, each layer comes with something you can poke, and what I've actually built there.
+      </p>
+      <ol class="border-t-2 border-ink" data-reveal-stagger>
+        {layers.map((l, i) => (
+          <li class="border-b-2 border-ink">
+            <a href={`#${l.id}`} class="group flex items-center gap-4 py-4 no-underline transition-colors hover:bg-hazard sm:gap-6 sm:px-2">
+              <span class="w-12 shrink-0 bg-ink py-1 text-center font-mono text-sm font-bold text-hazard group-hover:bg-cobalt">{l.code}</span>
+              <span class="font-display text-xl font-extrabold uppercase sm:text-2xl" style="font-stretch:112%">{l.name}</span>
+              <span class="ml-auto hidden text-right font-mono text-xs text-muted sm:block">{l.blurb}</span>
+              <span class="font-mono text-lg transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>

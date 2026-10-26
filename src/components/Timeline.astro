@@ -1,0 +1,20 @@
+---
+import SectionHead from './SectionHead.astro';
+import { timeline } from '../data/site';
+---
+<section id="timeline" class="relative py-20 sm:py-28" aria-labelledby="timeline-title">
+  <div class="wrap">
+    <SectionHead id="timeline-title" kicker="§06 — Changelog" title="Release notes" note="semver for a career" noteColor="blue" />
+    <ol class="relative grid grid-cols-1 gap-0 border-l-2 border-ink pl-6 lg:grid-cols-6 lg:border-l-0 lg:border-t-2 lg:pl-0 lg:pt-0" data-reveal-stagger>
+      {timeline.map((t, i) => (
+        <li class="relative pb-8 lg:pb-0 lg:pr-5 lg:pt-8">
+          <span class={`absolute -left-[33px] top-1 size-4 border-2 border-ink lg:-top-[9px] lg:left-0 ${i === timeline.length - 1 ? 'bg-signal' : 'bg-hazard'}`} aria-hidden="true"></span>
+          <p class="font-mono text-[12px] font-bold text-cobalt">v{i === 0 ? '0.1' : `${Math.min(i, 9)}.0`} · {t.when}</p>
+          <p class="mt-1 font-bold leading-snug">{t.what}</p>
+          <p class="mt-0.5 text-[14px] text-muted">{t.where}</p>
+          {t.note && <p class="mt-1 font-mono text-[11.5px] text-muted">{t.note}</p>}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

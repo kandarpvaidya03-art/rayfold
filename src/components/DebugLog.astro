@@ -1,0 +1,45 @@
+---
+import SectionHead from './SectionHead.astro';
+import { debugLog } from '../data/site';
+---
+<section id="debug" class="relative overflow-hidden py-20 sm:py-28" data-hsection aria-labelledby="debug-title">
+  <div class="wrap">
+    <SectionHead id="debug-title" kicker="§03 — Debug log" title="How I find<br/>what's broken" note="symptom → ruled out → root cause → fix" />
+  </div>
+  <div class="lg:pl-[max(24px,calc((100vw-1240px)/2+24px))]" data-hwrap>
+    <ol class="flex flex-col gap-6 px-5 sm:px-6 lg:w-max lg:flex-row lg:gap-8 lg:px-0 lg:pr-[10vw]" data-htrack>
+      {debugLog.map((d, i) => (
+        <li class="sheet sheet-shadow-ink flex flex-col lg:w-[440px]">
+          <div class="flex items-center justify-between gap-3 border-b-2 border-ink bg-ink px-4 py-2 font-mono text-[12px] font-bold text-hazard">
+            <span>{d.id}</span><span class="text-[#D9D9E0]">{d.where}</span>
+          </div>
+          <div class="flex flex-1 flex-col gap-4 p-5">
+            <h3 class="font-display text-2xl font-extrabold leading-tight" style="font-stretch:110%">{d.title}</h3>
+            <div>
+              <p class="fig text-muted">Symptom</p>
+              <p class="mt-1 text-[15px] leading-snug">{d.symptom}</p>
+            </div>
+            {d.ruledOut.length > 0 && <div>
+              <p class="fig text-muted">Ruled out</p>
+              <ul class="mt-1 space-y-1 font-mono text-[13px]">
+                {d.ruledOut.map((r) => <li class="flex gap-2"><span class="font-bold text-signal-text">✕</span><span class="line-through decoration-2">{r}</span></li>)}
+              </ul>
+            </div>}
+            <div class="border-l-4 border-hazard bg-[#FFFBE0] px-3 py-2">
+              <p class="fig">Root cause</p>
+              <p class="mt-1 text-[15px] font-semibold leading-snug">{d.cause}</p>
+            </div>
+            <div class="mt-auto border-l-4 border-mint bg-[#E6FBF5] px-3 py-2">
+              <p class="fig">Fix</p>
+              <p class="mt-1 text-[15px] leading-snug">{d.fix}</p>
+            </div>
+          </div>
+        </li>
+      ))}
+      <li class="flex flex-col justify-center lg:w-[360px]">
+        <p class="font-marker text-3xl leading-tight text-cobalt -rotate-2">the scope is usually right.<br/>the assumption usually isn't.</p>
+        <p class="kicker mt-4 text-muted">Tools: oscilloscope · multimeter · OpenOCD · simulators · checkpatch · pytest</p>
+      </li>
+    </ol>
+  </div>
+</section>

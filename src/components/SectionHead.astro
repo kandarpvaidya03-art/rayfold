@@ -1,0 +1,11 @@
+---
+interface Props { kicker: string; title: string; note?: string; noteColor?: 'red' | 'blue'; id?: string; dark?: boolean }
+const { kicker, title, note, noteColor = 'red', id, dark = false } = Astro.props;
+---
+<div class="mb-10 sm:mb-12">
+  <p class={`kicker mb-3 ${dark ? 'text-hazard' : ''}`}>{kicker}</p>
+  <div class="flex flex-wrap items-end gap-x-8 gap-y-3">
+    <h2 id={id} class="display text-[clamp(38px,5.6vw,72px)]" data-split set:html={title} />
+    {note && <p class={`${noteColor === 'red' ? (dark ? 'font-marker text-hazard' : 'marker') : 'marker-blue'} mb-1 -rotate-2 text-lg sm:text-[22px]`} data-reveal>{note}</p>}
+  </div>
+</div>

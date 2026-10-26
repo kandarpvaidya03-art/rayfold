@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="404 · No ACK · rayfold" noindex>
+  <div class="hazard h-2" aria-hidden="true"></div>
+  <main id="main" class="grid min-h-[90vh] place-items-center px-5 py-16">
+    <div class="sheet sheet-shadow-blue w-full max-w-2xl p-8 sm:p-12">
+      <p class="kicker">ERR 404 · Address not acknowledged</p>
+      <h1 class="display mt-4 text-[clamp(44px,9vw,84px)]">No device at this address</h1>
+      <p class="marker mt-4 text-xl">I sent the request, but nothing pulled SDA low.</p>
+      <a href="/" class="btn mt-8 bg-hazard no-underline">← Back to rayfold.com</a>
+    </div>
+  </main>
+</Base>

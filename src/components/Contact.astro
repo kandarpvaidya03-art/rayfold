@@ -1,0 +1,32 @@
+---
+import { person } from '../data/site';
+const links = [
+  { href: person.github, label: 'GitHub ↗' },
+  ...(person.linkedin ? [{ href: person.linkedin, label: 'LinkedIn ↗' }] : []),
+  { href: person.resume, label: 'Résumé.pdf ↓' },
+];
+---
+<section id="contact" class="relative py-20 sm:py-28" aria-labelledby="contact-title">
+  <div class="wrap">
+    <p class="kicker mb-4">§07 — Ship to</p>
+    <div class="sheet sheet-shadow-blue grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px]" data-reveal>
+      <div class="border-b-2 border-ink p-6 sm:p-10 lg:border-b-0 lg:border-r-2">
+        <p class="marker -rotate-2 text-xl">handle with care: kettle's on</p>
+        <h2 id="contact-title" class="display mt-3 text-[clamp(32px,7vw,104px)] [overflow-wrap:anywhere]" data-split>Let's build<br/>something solid</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed">Open to embedded, firmware and embedded-Linux roles. If your product has a microcontroller in it, I'd like to hear about it.</p>
+        <a href={`mailto:${person.email}`} class="mt-7 inline-block max-w-full border-2 border-ink bg-hazard px-5 py-4 font-mono text-[clamp(15px,2.2vw,24px)] font-bold no-underline [overflow-wrap:anywhere] hover:bg-ink hover:text-hazard">{person.email}</a>
+        <div class="mt-6 flex flex-wrap gap-3">
+          {links.map((l) => <a href={l.href} target="_blank" rel="noopener" class="btn bg-white no-underline">{l.label}</a>)}
+        </div>
+      </div>
+      <dl class="flex flex-col gap-4 p-6 font-mono text-[13px] sm:p-8">
+        <div><dt class="font-bold">FROM</dt><dd>{person.name} · {person.location}</dd></div>
+        <div><dt class="font-bold">CONTENTS</dt><dd>1× embedded systems engineer</dd></div>
+        <div><dt class="font-bold">CONDITION</dt><dd>tested, measured, signed</dd></div>
+        <div><dt class="font-bold">HANDLING</dt><dd>gates → registers → drivers → OS → networks → products</dd></div>
+        <div class="barcode mt-auto h-16" aria-hidden="true"></div>
+        <dd>RAYFOLD.COM · 2026</dd>
+      </dl>
+    </div>
+  </div>
+</section>

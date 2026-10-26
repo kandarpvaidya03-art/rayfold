@@ -1,0 +1,63 @@
+---
+import LayerHead from './LayerHead.astro';
+const nodes = [
+  { zone: 'hw', t: 'ADXL345', s: 'INT1 · data ready' },
+  { zone: 'k', t: 'Hard IRQ', s: 'iio_trigger_poll()' },
+  { zone: 'k', t: 'Threaded handler', s: 'regmap_bulk_read() · 6 B' },
+  { zone: 'k', t: 'IIO buffer', s: 'sample + kernel timestamp' },
+  { zone: 'k', t: '/dev/iio:device0', s: 'character device' },
+  { zone: 'u', t: 'Python capture', s: 'benchmarks, logging' },
+];
+---
+<section id="l3" class="relative bg-ink py-20 text-[#F4F1E8] sm:py-28" data-layer="l3" aria-label="Layer 3: operating systems">
+  <div class="wrap">
+    <LayerHead code="L3" name="Operating systems" line="Linux when the job needs a kernel, FreeRTOS when it needs a scheduler, bare metal when it needs neither. Here's the path one accelerometer sample takes through my driver." note="one sample, hardware → kernel → you ↓" dark />
+
+    <div class="border-2 border-[#3A3A4C] bg-[#12121E] p-4 sm:p-6" data-reveal>
+      <p class="fig mb-4 text-hazard">Fig. 6 — IIO triggered-buffer data path</p>
+      <div class="overflow-x-auto pb-2">
+        <div class="relative min-w-[880px]" data-pipeline>
+          <div class="mb-2 grid grid-cols-6 gap-3 font-mono text-[10.5px] font-bold uppercase">
+            <span class="text-mint">Hardware</span><span class="col-span-4 border-b border-dashed border-[#4A4A60] text-hazard">Kernel space</span><span class="text-[#B9B9C9]">User space</span>
+          </div>
+          <div class="absolute left-[6%] right-[6%] top-[86px] h-[3px] bg-[#3A3A4C]" aria-hidden="true"></div>
+          <div class="absolute left-[6%] top-[80px] size-[15px] bg-signal shadow-[0_0_14px_#FF220F]" data-packet aria-hidden="true"></div>
+          <ol class="relative grid grid-cols-6 gap-3">
+            {nodes.map((n, i) => (
+              <li class={`border-2 p-3 ${n.zone === 'hw' ? 'border-mint' : n.zone === 'k' ? 'border-hazard' : 'border-[#B9B9C9]'} bg-[#0B0B14]`} data-pnode={i}>
+                <span class="block font-mono text-[10px] text-[#9A9AAE]">0{i + 1}</span>
+                <span class="mt-8 block font-mono text-[13px] font-bold leading-tight">{n.t}</span>
+                <span class="mt-1 block font-mono text-[11px] leading-snug text-[#B9B9C9]">{n.s}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)]">
+      <div class="border-2 border-[#3A3A4C] bg-[#12121E] p-5 sm:p-6" data-reveal>
+        <p class="fig mb-5 text-hazard">Fig. 7 — Interrupts vs polling (measured)</p>
+        <div class="space-y-5 font-mono text-[13px]">
+          <div>
+            <div class="mb-1.5 flex justify-between"><span>Sustained sample rate</span><span class="text-[#B9B9C9]">higher is better</span></div>
+            <div class="flex items-center gap-3"><span class="w-24 shrink-0 text-mint">IIO driver</span><div class="h-6 flex-1 bg-[#22222E]"><div class="h-full bg-mint" style="width:100%" data-bar></div></div><b class="w-20 text-right">3.2 kHz</b></div>
+            <div class="mt-1.5 flex items-center gap-3"><span class="w-24 shrink-0 text-[#B9B9C9]">Polling</span><div class="h-6 flex-1 bg-[#22222E]"><div class="h-full bg-[#6A6A80]" style="width:72%" data-bar></div></div><b class="w-20 text-right">~2.3 kHz</b></div>
+          </div>
+          <div>
+            <div class="mb-1.5 flex justify-between"><span>CPU time per sample</span><span class="text-[#B9B9C9]">lower is better</span></div>
+            <div class="flex items-center gap-3"><span class="w-24 shrink-0 text-[#B9B9C9]">Polling</span><div class="h-6 flex-1 bg-[#22222E]"><div class="h-full bg-[#6A6A80]" style="width:100%" data-bar></div></div><b class="w-20 text-right">baseline</b></div>
+            <div class="mt-1.5 flex items-center gap-3"><span class="w-24 shrink-0 text-mint">IIO driver</span><div class="h-6 flex-1 bg-[#22222E]"><div class="h-full bg-mint" style="width:40.5%" data-bar></div></div><b class="w-20 text-right">−57–62%</b></div>
+          </div>
+          <p class="text-[11.5px] text-[#9A9AAE]">400 kHz I2C, Raspberry Pi 5. Zero dropped samples at 3.2 kHz; a 10-minute run at 800 Hz captured 470,000 samples with no gaps.</p>
+        </div>
+      </div>
+      <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2" data-reveal-stagger>
+        <li class="border-2 border-[#3A3A4C] p-4"><p class="font-mono text-[11px] font-bold text-hazard">LINUX · BUILDROOT</p><p class="mt-2 font-bold">185 MB cross-compiled image</p><p class="mt-1 text-[14px] text-[#C9C9D6]">Minimal image that loads the driver at boot by modalias.</p></li>
+        <li class="border-2 border-[#3A3A4C] p-4"><p class="font-mono text-[11px] font-bold text-hazard">LINUX · DEVICE TREE</p><p class="mt-2 font-bold">Overlay-bound driver</p><p class="mt-1 text-[14px] text-[#C9C9D6]">Device described in an overlay, probed on the Pi 5's I2C bus.</p></li>
+        <li class="border-2 border-[#3A3A4C] p-4"><p class="font-mono text-[11px] font-bold text-mint">FREERTOS · ESP32</p><p class="mt-2 font-bold">ESP32 core 3.x</p><p class="mt-1 text-[14px] text-[#C9C9D6]">Ported an AVR P10 LED-matrix driver to ESP32 with PWM brightness.</p></li>
+        <li class="border-2 border-[#3A3A4C] p-4"><p class="font-mono text-[11px] font-bold text-mint">BARE METAL · CORTEX-M4</p><p class="mt-2 font-bold">No OS at all</p><p class="mt-1 text-[14px] text-[#C9C9D6]">The bootloader runs before anything else exists: no RTOS, no HAL.</p></li>
+      </ul>
+    </div>
+  </div>
+</section>

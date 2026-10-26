@@ -1,0 +1,30 @@
+---
+import { person } from '../data/site';
+const links = [
+  { href: '#stack', label: 'Stack' },
+  { href: '#debug', label: 'Debug log' },
+  { href: '#bench', label: 'Bench' },
+  { href: '#toolbox', label: 'Toolbox' },
+];
+---
+<header class="fixed inset-x-0 top-0 z-50" data-nav>
+  <div class="hazard h-2" aria-hidden="true"></div>
+  <div class="border-b-2 border-ink bg-paper/85 backdrop-blur-md">
+    <nav class="wrap flex h-16 items-center justify-between gap-4" aria-label="Primary">
+      <a href="#top" class="flex items-center gap-3 no-underline">
+        <span class="font-display text-xl font-black tracking-wide" style="font-stretch:125%">RAYFOLD</span>
+        <span class="hidden border-2 border-ink px-1.5 py-0.5 font-mono text-[11px] sm:inline">KV-01</span>
+      </a>
+      <ul class="hidden items-center gap-1 font-mono text-[13px] font-semibold uppercase md:flex">
+        {links.map((l) => (
+          <li><a href={l.href} class="px-3 py-2 no-underline hover:bg-hazard">{l.label}</a></li>
+        ))}
+      </ul>
+      <div class="flex items-center gap-2">
+        <a href={person.resume} target="_blank" rel="noopener" class="hidden px-3 py-2 font-mono text-[13px] font-bold uppercase underline decoration-2 underline-offset-4 sm:inline">Résumé</a>
+        <a href="#contact" class="bg-ink px-4 py-2.5 font-mono text-[13px] font-bold uppercase text-hazard no-underline">Contact →</a>
+      </div>
+    </nav>
+    <div class="h-[3px] origin-left scale-x-0 bg-cobalt" data-progress aria-hidden="true"></div>
+  </div>
+</header>

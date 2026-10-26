@@ -1,0 +1,76 @@
+---
+import LayerHead from './LayerHead.astro';
+const protocols = [
+  { n: 'UART', d: 'Async serial. My bootloader’s CRC-32 framed update channel.', w: 'M0 14 H14 V28 H28 V14 H42 V28 H56 V14 H70 V28 H84 V14 H120' },
+  { n: 'I2C', d: 'Two wires, addressed, ACKed. The ADXL345 link at 400 kHz.', w: 'M0 8 H10 V26 H22 V8 H34 V26 H46 V8 H58 V26 H70 V8 H82 V26 H94 V8 H120' },
+  { n: 'SPI', d: 'Clocked, full-duplex, chip-select. LED matrices and fast peripherals.', w: 'M0 26 H12 V8 H20 V26 H28 V8 H36 V26 H44 V8 H52 V26 H60 V8 H68 V26 H76 V8 H84 V26 H120' },
+  { n: 'MQTT', d: 'Publish / subscribe over TCP. Small devices, shared topics.', w: 'M0 17 H20 L30 6 L40 28 L50 6 L60 28 L70 17 H120' },
+  { n: 'ZeroMQ', d: 'Brokerless message sockets between processes and boards.', w: 'M0 17 H24 V6 H48 V28 H72 V6 H96 V17 H120' },
+  { n: 'Wi-Fi / BLE', d: 'The ESP32 radio. Where a board becomes a node.', w: 'M0 17 Q10 0 20 17 T40 17 T60 17 T80 17 T100 17 T120 17' },
+];
+const nodes = [
+  { id: 'hub', x: 320, y: 56, t: 'Ceiling sensor hub', s: 'multi-sensor fusion', spoke: 'M320 90 L320 152' },
+  { id: 'hmi', x: 104, y: 238, t: 'Raspberry Pi HMI', s: 'display + control', spoke: 'M196 238 L262 210' },
+  { id: 'relay', x: 320, y: 312, t: 'ESP32 relay node', s: 'switching loads', spoke: 'M320 278 L320 228' },
+  { id: 'meter', x: 536, y: 238, t: 'ESP32 power meter', s: 'measuring loads', spoke: 'M444 238 L378 210' },
+];
+---
+<section id="l4" class="relative py-20 sm:py-28" data-layer="l4" aria-label="Layer 4: buses and networks">
+  <div class="wrap">
+    <LayerHead code="L4" name="Buses & networks" line="Chips talk over buses, boards talk over networks. Debugging either means seeing the actual bits, which is why the scope comes out first." note="my Pi knocking on the ADXL345's door ↓" />
+
+    <figure class="sheet p-4 sm:p-6" data-reveal>
+      <figcaption class="fig mb-2 flex flex-wrap justify-between gap-2"><span>Fig. 8 — I2C write to 0x53 @ 400 kHz</span><span class="text-muted">CH1 SCL · CH2 SDA</span></figcaption>
+      <div class="overflow-x-auto">
+        <svg viewBox="0 0 1000 200" class="block w-full min-w-[720px]" role="img" aria-label="I2C timing diagram: start, address 0x53 with write bit, acknowledge from the sensor, stop" data-scope>
+          <g stroke="#E2E2DC" stroke-width="1"><path d="M40 20 V176 M100 20 V176 M160 20 V176 M220 20 V176 M280 20 V176 M340 20 V176 M400 20 V176 M460 20 V176 M520 20 V176 M580 20 V176 M640 20 V176 M700 20 V176 M760 20 V176 M820 20 V176 M880 20 V176 M940 20 V176" /></g>
+          <g font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#0B0B14"><text x="0" y="60">SCL</text><text x="0" y="130">SDA</text></g>
+          <path d="M40 40 H110 V70 H140 V40 H170 V70 H200 V40 H230 V70 H260 V40 H290 V70 H320 V40 H350 V70 H380 V40 H410 V70 H440 V40 H470 V70 H500 V40 H530 V70 H560 V40 H590 V70 H620 V40 H650 V70 H680 V40 H960" fill="none" stroke="#0000C4" stroke-width="3" data-draw />
+          <path d="M40 110 H80 V140 H125 V110 H185 V140 H245 V110 H305 V140 H425 V110 H545 V140 H720 V110 H960" fill="none" stroke="#FF220F" stroke-width="3" data-draw />
+          <g font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#0B0B14" text-anchor="middle" data-bits>
+            <text x="155" y="98">1</text><text x="215" y="98">0</text><text x="275" y="98">1</text><text x="335" y="98">0</text><text x="395" y="98">0</text><text x="455" y="98">1</text><text x="515" y="98">1</text><text x="575" y="98">0</text><text x="635" y="98" fill="#C81A06">ACK</text>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="12" fill="#4A4A58" text-anchor="middle"><text x="80" y="170">START</text><text x="365" y="170">address 0x53 + write</text><text x="720" y="170">STOP</text></g>
+        </svg>
+      </div>
+      <p class="marker mt-2 text-right text-lg">↑ that dip on SDA = the sensor saying "yep, I'm here"</p>
+    </figure>
+
+    <ul class="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+      {protocols.map((p) => (
+        <li class="sheet flex items-start gap-4 p-4">
+          <svg viewBox="0 0 120 34" class="mt-1 h-7 w-24 shrink-0" aria-hidden="true"><path d={p.w} fill="none" stroke="#0000C4" stroke-width="2.5" stroke-linejoin="round" /></svg>
+          <div><p class="font-mono text-sm font-bold">{p.n}</p><p class="mt-0.5 text-[14px] leading-snug text-muted">{p.d}</p></div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-12 grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div data-reveal>
+        <p class="fig mb-3">Fig. 9 — From a board to a system</p>
+        <h3 class="font-display text-3xl font-extrabold leading-tight" style="font-stretch:112%">A room that knows you're there.</h3>
+        <p class="mt-4 text-[16px] leading-relaxed">At PHN I drafted the architecture for a distributed, multi-sensor presence system: a ceiling sensor hub, a Raspberry Pi HMI, and ESP32 relay and power-meter nodes. I defined 35 features with multi-sensor fusion, selected the hardware and drafted the BoM.</p>
+        <p class="marker-blue mt-4 -rotate-1 text-lg">packets in flight →</p>
+      </div>
+      <figure class="sheet grid-paper sheet-shadow-ink p-3 sm:p-5" data-reveal>
+        <svg viewBox="0 0 640 370" class="block w-full" role="img" aria-label="Network diagram: ceiling sensor hub, Raspberry Pi HMI, ESP32 relay node and ESP32 power-meter node, all connected over the local network" data-net>
+          <ellipse cx="320" cy="190" rx="78" ry="38" fill="#FEEA4D" stroke="#0B0B14" stroke-width="3" />
+          <text x="320" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#0B0B14">LOCAL</text>
+          <text x="320" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#0B0B14">NETWORK</text>
+          {nodes.map((n) => (
+            <path id={`spoke-${n.id}`} d={n.spoke} stroke="#0B0B14" stroke-width="3" stroke-dasharray="7 6" fill="none" />
+          ))}
+          {nodes.map((n) => (
+            <g>
+              <rect x={n.x - 92} y={n.y - 34} width="184" height="68" fill="#fff" stroke="#0B0B14" stroke-width="3" />
+              <rect x={n.x - 92} y={n.y - 34} width="184" height="8" fill={n.id === 'hub' ? '#00D8A7' : n.id === 'hmi' ? '#0000C4' : '#FF220F'} />
+              <text x={n.x} y={n.y + 4} text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#0B0B14">{n.t}</text>
+              <text x={n.x} y={n.y + 22} text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#4A4A58">{n.s}</text>
+            </g>
+          ))}
+          <g data-packets></g>
+        </svg>
+      </figure>
+    </div>
+  </div>
+</section>

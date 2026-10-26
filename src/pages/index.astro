@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import DepthRail from '../components/DepthRail.astro';
+import Hero from '../components/Hero.astro';
+import StackIntro from '../components/StackIntro.astro';
+import L0Gates from '../components/L0Gates.astro';
+import L1Registers from '../components/L1Registers.astro';
+import L2Firmware from '../components/L2Firmware.astro';
+import L3Os from '../components/L3Os.astro';
+import L4Buses from '../components/L4Buses.astro';
+import L5Systems from '../components/L5Systems.astro';
+import DebugLog from '../components/DebugLog.astro';
+import Bench from '../components/Bench.astro';
+import Toolbox from '../components/Toolbox.astro';
+import Timeline from '../components/Timeline.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base>
+  <Nav />
+  <DepthRail />
+  <main id="main">
+    <Hero />
+    <StackIntro />
+    <L0Gates />
+    <L1Registers />
+    <L2Firmware />
+    <L3Os />
+    <L4Buses />
+    <L5Systems />
+    <DebugLog />
+    <Bench />
+    <Toolbox />
+    <Timeline />
+    <Contact />
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  import '../scripts/demos';
+  import '../scripts/motion';
+</script>

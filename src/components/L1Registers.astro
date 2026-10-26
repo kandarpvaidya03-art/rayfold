@@ -1,0 +1,49 @@
+---
+import LayerHead from './LayerHead.astro';
+import { REGS, renderReg } from '../data/registers';
+const first = REGS[0];
+---
+<section id="l1" class="relative border-y-2 border-ink bg-sheet py-20 sm:py-28" data-layer="l1" aria-label="Layer 1: registers">
+  <div class="wrap">
+    <LayerHead code="L1" name="Registers" line="Where software stops being abstract. Every feature is a bit in a register, and the datasheet is the source of truth. Click the bits of a real ADXL345 register." note="this is literally what my driver writes ↓" />
+
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+      <div class="sheet sheet-shadow-blue p-4 sm:p-6" data-reveal data-regx>
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <p class="fig">Fig. 3 — ADXL345 register explorer</p>
+          <div class="flex flex-wrap gap-1.5" role="tablist" aria-label="Register">
+            {REGS.map((r, i) => (
+              <button type="button" role="tab" class={`border-2 border-ink px-2.5 py-1.5 font-mono text-[12px] font-bold ${i === 0 ? 'bg-ink text-hazard' : 'bg-white'}`} data-reg-tab={r.key} aria-selected={i === 0 ? 'true' : 'false'}>
+                {r.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div data-reg-body set:html={renderReg(first, first.preset?.value ?? first.reset)} />
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button type="button" class="btn bg-hazard text-xs" data-reg-preset>Load: my driver's setting</button>
+          <button type="button" class="btn bg-white text-xs" data-reg-reset>Reset value</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <div class="sheet p-4 sm:p-6" data-reveal>
+          <p class="fig mb-3">Fig. 4 — Register level, STM32 side</p>
+          <p class="mb-4 text-[15px] leading-relaxed">The last thing my bootloader does after verifying a signature: point the vector table at the app, load its stack pointer, and jump. No HAL, just addresses.</p>
+          <pre class="code"><span class="c">/* bootloader → verified app (simplified) */</span>
+<span class="k">uint32_t</span> sp = *(<span class="k">volatile uint32_t</span> *)APP_BASE;
+<span class="k">uint32_t</span> pc = *(<span class="k">volatile uint32_t</span> *)(APP_BASE + <span class="n">4</span>);
+*(<span class="k">volatile uint32_t</span> *)<span class="n">0xE000ED08</span> = APP_BASE; <span class="c">/* SCB-&gt;VTOR */</span>
+<span class="k">__asm volatile</span>(<span class="s">"msr msp, %0"</span> :: <span class="s">"r"</span>(sp));
+((<span class="k">void</span> (*)(<span class="k">void</span>))pc)();               <span class="c">/* never returns */</span></pre>
+        </div>
+        <ul class="grid grid-cols-1 gap-2 font-mono text-[13px] sm:grid-cols-2" data-reveal-stagger>
+          <li class="border-2 border-ink bg-white p-3"><b>Own linker scripts</b><br/><span class="text-muted">flash split into bootloader + A/B slots</span></li>
+          <li class="border-2 border-ink bg-white p-3"><b>Own startup code</b><br/><span class="text-muted">vector table, .data/.bss init</span></li>
+          <li class="border-2 border-ink bg-white p-3"><b>UART, flash, timer drivers</b><br/><span class="text-muted">written against the reference manual</span></li>
+          <li class="border-2 border-ink bg-white p-3"><b>regmap + devm</b><br/><span class="text-muted">register I/O on the Linux side</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

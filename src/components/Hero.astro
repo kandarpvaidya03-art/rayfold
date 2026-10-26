@@ -1,0 +1,71 @@
+---
+import { heroStats } from '../data/site';
+const layerLabels = [
+  { key: 'parts', n: '04', name: 'Components', sub: 'STM32F401 · ADXL345 · ESP32' },
+  { key: 'mask', n: '03', name: 'Solder mask + pads', sub: 'Silkscreen, exposed copper' },
+  { key: 'copper', n: '02', name: 'Copper', sub: 'I2C · UART · USB · GPIO traces' },
+  { key: 'core', n: '01', name: 'FR-4 core', sub: 'Glass-epoxy substrate' },
+];
+---
+<section id="top" class="relative overflow-hidden pt-[72px] lg:h-[100svh] lg:min-h-[720px]" data-hero aria-labelledby="hero-title">
+  <div class="wrap relative grid h-full grid-cols-1 items-center gap-6 py-10 lg:grid-cols-[minmax(0,6fr)_minmax(0,7fr)] lg:gap-10 lg:pb-[104px] lg:pt-4">
+    <!-- copy -->
+    <div class="relative z-10" data-hero-copy>
+      <div class="mb-6 flex flex-wrap gap-2">
+        <span class="chip border-mint bg-mint">● Open to work</span>
+        <span class="chip">Pune, IN</span>
+        <span class="chip">Rev. 2026</span>
+      </div>
+      <p class="kicker mb-3">§01 — Embedded systems engineer</p>
+      <h1 id="hero-title" class="display text-[clamp(48px,5.2vw,82px)]" style="font-stretch:112%" data-split>
+        Kandarp<br /><span class="text-cobalt">Vaidya</span>
+      </h1>
+      <p class="mt-6 max-w-[34rem] text-lg leading-relaxed sm:text-xl" data-reveal>
+        From <strong>logic gates</strong> to <strong>networked products</strong>, I work every layer in between: Linux kernel drivers, signed bootloaders, MCU firmware, robotics, and the debugging that ties it together.
+      </p>
+      <div class="mt-7 flex flex-wrap items-center gap-3" data-reveal>
+        <a href="#stack" class="btn bg-hazard no-underline">Descend the stack ↓</a>
+        <a href="#contact" class="btn bg-white no-underline">Get in touch</a>
+      </div>
+      <p class="marker mt-6 hidden -rotate-2 text-xl lg:block" data-reveal>scroll, and the board comes apart ↘</p>
+    </div>
+
+    <!-- 3D stage -->
+    <div class="crop relative h-[62vh] min-h-[380px] border-2 border-ink bg-sheet lg:h-[calc(100svh-240px)] lg:max-h-[760px] lg:min-h-[460px]" data-stage>
+      <p class="fig absolute left-4 top-3 z-10">Fig. 1 — Exploded view, rev A</p>
+      <p class="fig absolute bottom-3 right-4 z-10 text-muted" data-stage-hint><span class="hidden lg:inline">move the mouse · </span>scroll to explode</p>
+      <div class="absolute inset-0" data-pcb></div>
+      <div class="pointer-events-none absolute inset-0 grid place-items-center" data-pcb-fallback>
+        <div class="text-center">
+          <div class="barcode mx-auto h-10 w-40 opacity-60"></div>
+          <p class="fig mt-3 text-muted">Loading board…</p>
+        </div>
+      </div>
+      <div class="pointer-events-none absolute inset-0 z-10 hidden md:block" aria-hidden="true">
+        {layerLabels.map((l) => (
+          <div class="absolute left-0 top-0 w-max opacity-0" data-layer-label={l.key}>
+            <div class="flex items-center gap-2">
+              <span class="h-[2px] w-8 bg-ink"></span>
+              <span class="bg-ink px-1.5 py-0.5 font-mono text-[11px] font-bold text-hazard">{l.n}</span>
+              <span class="font-mono text-xs font-bold uppercase">{l.name}</span>
+            </div>
+            <p class="ml-10 font-mono text-[11px] text-muted">{l.sub}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- stat strip -->
+  <div class="relative z-10 border-y-2 border-ink bg-white lg:absolute lg:inset-x-0 lg:bottom-0">
+    <dl class="wrap grid grid-cols-2 lg:grid-cols-4">
+      {heroStats.map((s, i) => (
+        <div class={`py-4 pr-4 ${i % 2 ? 'pl-4 border-l-2 border-ink lg:pl-6' : 'lg:pl-6'} ${i >= 2 ? 'border-t-2 border-ink lg:border-t-0' : ''} ${i === 2 ? 'lg:border-l-2' : ''} ${i === 0 ? 'lg:pl-0' : ''}`} data-hero-in>
+          <dt class="sr-only">{s.label}</dt>
+          <dd class="font-display text-2xl font-black sm:text-3xl" style="font-stretch:112%">{s.value}</dd>
+          <dd class="font-mono text-[11px] uppercase leading-snug text-muted sm:text-xs" aria-hidden="true">{s.label}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

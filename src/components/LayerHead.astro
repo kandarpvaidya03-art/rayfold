@@ -1,0 +1,18 @@
+---
+interface Props { code: string; name: string; line: string; note?: string; dark?: boolean }
+const { code, name, line, note, dark = false } = Astro.props;
+---
+<div class="mb-10 grid grid-cols-1 items-end gap-y-2 sm:mb-14 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-8">
+  <span
+    class="font-display text-[clamp(72px,13vw,176px)] font-black leading-[.8] sm:row-span-2"
+    style={`font-stretch:125%; color:transparent; -webkit-text-stroke:2px ${dark ? '#FEEA4D' : '#0B0B14'};`}
+    aria-hidden="true"
+    data-layer-code
+  >{code}</span>
+  <p class={`kicker ${dark ? 'text-hazard' : ''}`}>Layer {code.slice(1)} of 5</p>
+  <div>
+    <h2 class="display text-[clamp(32px,5vw,64px)] [overflow-wrap:anywhere]" data-split>{name}</h2>
+    <p class={`mt-2 max-w-2xl text-base sm:text-lg ${dark ? 'text-[#D9D9E0]' : 'text-muted'}`} data-reveal>{line}</p>
+    {note && <p class={`${dark ? 'font-marker text-hazard' : 'marker'} mt-2 -rotate-1 text-lg`} data-reveal>{note}</p>}
+  </div>
+</div>

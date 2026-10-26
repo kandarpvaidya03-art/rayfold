@@ -1,0 +1,16 @@
+---
+import { layers } from '../data/site';
+---
+<aside class="pointer-events-none fixed left-4 top-1/2 z-40 hidden -translate-y-1/2 opacity-0 2xl:block" data-rail aria-hidden="true">
+  <p class="fig mb-3 [writing-mode:vertical-rl] rotate-180">Stack depth</p>
+  <ol class="relative flex flex-col gap-3 border-l-2 border-ink pl-3">
+    <span class="absolute -left-[2px] top-0 w-[2px] bg-signal" style="height:0" data-rail-fill></span>
+    {layers.map((l) => (
+      <li class="pointer-events-auto">
+        <a href={`#${l.id}`} class="block font-mono text-[11px] font-bold text-muted no-underline transition-colors" data-rail-item={l.id}>
+          {l.code}<span class="ml-1.5 font-normal">{l.name.split(' ')[0]}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</aside>

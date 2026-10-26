@@ -1,0 +1,45 @@
+---
+import '../styles/global.css';
+
+interface Props { title?: string; description?: string; noindex?: boolean }
+const {
+  title = 'Kandarp Vaidya · Embedded Systems Engineer',
+  description = 'Kandarp Vaidya, embedded systems engineer in Pune. From logic gates to networked products: Linux kernel drivers, signed bootloaders, firmware, robotics and hardware, with measured results.',
+  noindex = false,
+} = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#FEEA4D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://rayfold.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'Person', name: 'Kandarp Vaidya',
+      jobTitle: 'Embedded Systems Engineer', url: 'https://rayfold.com/',
+      address: { '@type': 'PostalAddress', addressLocality: 'Pune', addressCountry: 'IN' },
+      alumniOf: 'Indian Institute of Information Technology, Surat',
+      sameAs: ['https://github.com/kandarpvaidya03-art'],
+    })} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>

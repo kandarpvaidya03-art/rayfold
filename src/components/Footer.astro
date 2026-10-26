@@ -1,0 +1,11 @@
+---
+import { person } from '../data/site';
+---
+<footer class="border-t-2 border-ink bg-ink text-[#F4F1E8]">
+  <div class="wrap flex flex-col gap-4 py-8 font-mono text-[12px] sm:flex-row sm:items-center sm:justify-between">
+    <p>© 2026 {person.name} · rayfold.com</p>
+    <p class="text-[#B9B9C4]">Built with Astro, Three.js, GSAP and Lenis. No trackers.</p>
+    <a href="#top" class="-my-2 inline-block py-3 font-bold text-hazard no-underline">Back to top ↑</a>
+  </div>
+  <div class="hazard h-2" aria-hidden="true"></div>
+</footer>
